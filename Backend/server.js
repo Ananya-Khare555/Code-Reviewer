@@ -22,7 +22,7 @@ app.post('/api/review', async (req, res) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
+          Authorization: `Bearer ${process.env.GOOGLE_GEMINI_KEY}`,
         },
       }
     );
