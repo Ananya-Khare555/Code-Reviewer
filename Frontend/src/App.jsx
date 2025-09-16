@@ -3,13 +3,13 @@ import "prismjs/themes/prism-tomorrow.css"
 import Editor from "react-simple-code-editor"
 import prism from "prismjs"
 import Markdown from "react-markdown"
-import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/github-dark.css";
+import rehypeHighlight from "rehype-highlight"
+import "highlight.js/styles/github-dark.css"
 import axios from 'axios'
 import './App.css'
 
 function App() {
-  const [code, setCode] = useState(` function sum() {
+  const [code, setCode] = useState(`function sum() {
   return 1 + 1
 }`)
 
@@ -19,9 +19,16 @@ function App() {
     prism.highlightAll()
   }, [])
 
+  const API_BASE = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'
+
   async function reviewCode() {
-    const response = await axios.post('http://localhost:3000/ai/get-review', { code })
-    setReview(response.data)
+    try {
+      const response = await axios.post(`${API_BASE}/api/review`, { text: code })
+      setReview(response.data)
+    } catch (err) {
+      console.error('Error calling backend:', err)
+      setReview('Error fetching review. Please try again.')
+    }
   }
 
   return (
@@ -49,17 +56,13 @@ function App() {
             className="review">Review</div>
         </div>
         <div className="right">
-          <Markdown
-
-            rehypePlugins={[rehypeHighlight]}
-
-          >{review}</Markdown>
+          <Markdown rehypePlugins={[rehypeHighlight]}>
+            {review}
+          </Markdown>
         </div>
       </main>
     </>
   )
 }
-
-
 
 export default App
